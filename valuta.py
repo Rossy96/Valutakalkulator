@@ -1,6 +1,7 @@
+from urllib2 import Request, urlopen, URLError
+
 print "Valutakalkulator"
 
-from urllib2 import Request, urlopen, URLError
 
 def hent_kurs(fra, til):
     request = Request('http://rate-exchange.appspot.com/currency?from=%s&to=%s' % (fra, til))
@@ -10,28 +11,38 @@ def hent_kurs(fra, til):
     rate = lst[1].split()
     return float(rate[1])
 
+
 usd = hent_kurs('USD', 'NOK')
 pund = hent_kurs('GBP', 'NOK')
 euro = hent_kurs('EUR', 'NOK')
 
 kurser = ['pund', 'usd', 'euro']
 
+
 def fra_nok():
+    try:
         mengde = float(raw_input("Velg mengde NOK kr: "))
-        valuta = raw_input("Velg valuta: usd, euro eller pund: ")
-        if valuta in kurser:
-            print "%.2f %s" % (mengde / eval(valuta.lower()), valuta)
-        else :
-            print "Ukjent Valuta"
+    except ValueError, e:
+        print "Det ble ikke oppgitt gyldig mengde"
+        return
+    valuta = raw_input("Velg valuta: usd, euro eller pund: ")
+    if valuta in kurser:
+        print "%.2f %s" % (mengde / eval(valuta.lower()), valuta)
+    else:
+        print "Ukjent Valuta"
+
 
 def til_nok():
-        valuta = raw_input("Velg valuta: usd, euro eller pund: ")
-        if valuta in kurser:
+    valuta = raw_input("Velg valuta: usd, euro eller pund: ")
+    if valuta in kurser:
+        try:
             mengde = float(raw_input("Velg mengde %s: " % valuta.lower()))
-            print "%.2f Nok" % (mengde * eval(valuta.lower()))
-            
-        else:
-            print"Ukjent valuta"
+        except ValueError, e:
+            print "Det ble ikke oppgitt gyldig mengde"
+            return
+        print "%.2f Nok" % (mengde * eval(valuta.lower()))
+    else:
+        print"Ukjent valuta"
 
 
 while True:
@@ -43,8 +54,5 @@ while True:
         til_nok()
     elif noknok.lower() == "stopp":
         break
-    else :
+    else:
         print "Ukjent kommando"
-            
-    
-        
